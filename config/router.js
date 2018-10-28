@@ -1,5 +1,6 @@
 import React from 'react';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import {Platform} from 'react-native';
+import { createStackNavigator, createBottomTabNavigator, createDrawerNavigator } from 'react-navigation';
 import { Ionicons } from '@expo/vector-icons'; 
 
 import Contacts from '../screens/Contacts';
@@ -8,13 +9,24 @@ import NewContact from '../screens/NewContact';
 import Me from '../screens/Me'
 
 import { capitalizeFirstLetter } from '../helpers/string';
+import { DrawerButton } from '../components/Header';
+
+
+const LeftDrawerButton = ({navigation}) => {
+  if(Platform.OS === 'android') {
+    return <DrawerButton onPress={()=> navigation.openDrawer()} />
+  }
+
+  return null;
+} 
 
 export const ContactsStack = createStackNavigator({
   Contacts: {
     screen: Contacts,
-    navigationOptions: {
+    navigationOptions: (props) => ({
       title: 'Contacts',
-    },
+      headerLeft: <LeftDrawerButton {...props} />,
+    }),
   },
   Details: {
     screen: Details,
@@ -27,18 +39,20 @@ export const ContactsStack = createStackNavigator({
 export const NewContactStack = createStackNavigator({
    NewContact: {
     screen: NewContact, 
-    navigationOptions: {
-      headerTitle: 'New Contact',
-    }
+    navigationOptions: (props) => ({
+      title: 'New Contact',
+      headerLeft: <LeftDrawerButton {...props} />,
+    }),
   },
 });
 
 export const MeStack = createStackNavigator({
    Me: {
     screen: Me,
-     navigationOptions: {
-      headerTitle: 'Me',
-    }
+     navigationOptions: (props) => ({
+      title: 'Me',
+      headerLeft: <LeftDrawerButton {...props} />,
+    }),
    },
 });
 
@@ -65,3 +79,41 @@ export const Tabs = createBottomTabNavigator({
     }
   },
 });
+
+
+export const Drawer = createDrawerNavigator({
+  Contacts: {
+    screen: ContactsStack,
+    navigationOptions:{
+      drawerLabel: 'Contacts'
+    }
+  },
+  NewContact: {
+    screen: NewContactStack,
+    navigationOptions:{
+      drawerLabel: 'New Contact'
+    },
+  },
+  Me: {
+    screen: MeStack,
+    navigationOptions:{
+      drawerLabel: 'Me'
+    }
+  },
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
